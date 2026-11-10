@@ -1,19 +1,36 @@
 
-## Import necessary libraries
-
+# Import necessary modules
 import os
+import ffmpeg
 from pathlib import Path
 
-import ffmpeg
 
-## Test folder
+## Getting current dir
 
-path = Path("../samples")
+music = Path('../samples')
+folders = [file for file in music.iterdir() if file.is_dir()]
 
-## Checking files in the samples folder
+# Function to convert files
+def convert(in_file):
+    try:
+        (   
+            ffmpeg
+            .input(in_file)
+            .output(f"{str(in_file).strip('.flac')}.wav", acodec = 'pcm_s16le')
+            .run()
+        )
 
-folders = [folder for folder in path.iterdir() if folder.is_dir() ]
+    except FileExistsError:
+        print("Error")
 
-for f in folders:
-    print(f)
-    print(os.path.exists(f"{f}_flac"))
+
+# Checking for folders and formats
+for folder in folders:
+    for file in folder.iterdir():
+        if '.flac' in str(file):
+            old_file = (f"{file}".rstrip('.flac'))
+            check = old_file + '.wav'
+            if Path(check).exists() is False:
+                convert(file)
+        else:
+            print("other file", file)

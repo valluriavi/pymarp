@@ -2,4 +2,5 @@
 # Avoid checking python virtual environments and environments
 
 .venv/
-
+samples
+.flac
